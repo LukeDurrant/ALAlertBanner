@@ -30,6 +30,7 @@ typedef enum {
     ALAlertBannerStyleFailure,
     ALAlertBannerStyleNotify,
     ALAlertBannerStyleWarning,
+    ALAlertBannerStyleCustom,
 } ALAlertBannerStyle;
 
 typedef enum {
@@ -87,6 +88,8 @@ typedef enum {
  Default value is 0.93f.
  */
 @property (nonatomic) CGFloat bannerOpacity;
+
+@property (nonatomic) UIColor *textColor;
 
 /**
  The default methods to customize and display a banner.

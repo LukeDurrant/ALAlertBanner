@@ -172,27 +172,34 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
     _titleLabel = [[UILabel alloc] init];
     _titleLabel.backgroundColor = [UIColor clearColor];
     _titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13.f];
-    _titleLabel.textColor = [UIColor colorWithWhite:1.f alpha:0.9f];
+    _titleLabel.textColor = self.textColor;
     _titleLabel.textAlignment = NSTextAlignmentLeft;
     _titleLabel.numberOfLines = 1;
     _titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-    _titleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
-    _titleLabel.layer.shadowOffset = CGSizeMake(0.f, -1.f);
-    _titleLabel.layer.shadowOpacity = 0.3f;
-    _titleLabel.layer.shadowRadius = 0.f;
+	
+	if(self.style != ALAlertBannerStyleCustom)
+	{
+		_titleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
+		_titleLabel.layer.shadowOffset = CGSizeMake(0.f, -1.f);
+		_titleLabel.layer.shadowOpacity = 0.3f;
+		_titleLabel.layer.shadowRadius = 0.f;
+	}
     [self addSubview:_titleLabel];
     
     _subtitleLabel = [[UILabel alloc] init];
     _subtitleLabel.backgroundColor = [UIColor clearColor];
     _subtitleLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:10.f];
-    _subtitleLabel.textColor = [UIColor colorWithWhite:1.f alpha:0.9f];
+    _subtitleLabel.textColor = self.textColor;
     _subtitleLabel.textAlignment = NSTextAlignmentLeft;
     _subtitleLabel.numberOfLines = 0;
     _subtitleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    _subtitleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
-    _subtitleLabel.layer.shadowOffset = CGSizeMake(0.f, -1.f);
-    _subtitleLabel.layer.shadowOpacity = 0.3f;
-    _subtitleLabel.layer.shadowRadius = 0.f;
+	if(self.style != ALAlertBannerStyleCustom)
+	{
+		_subtitleLabel.layer.shadowColor = [UIColor blackColor].CGColor;
+		_subtitleLabel.layer.shadowOffset = CGSizeMake(0.f, -1.f);
+		_subtitleLabel.layer.shadowOpacity = 0.3f;
+		_subtitleLabel.layer.shadowRadius = 0.f;
+	}
     [self addSubview:_subtitleLabel];
 }
 
@@ -221,7 +228,10 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
             //tone the shadows down a little for the yellow background
             self.titleLabel.layer.shadowOpacity = 0.2f;
             self.subtitleLabel.layer.shadowOpacity = 0.2f;
-            
+			break;
+		case ALAlertBannerStyleCustom:
+			self.styleImageView.image = [UIImage imageNamed:@"ALAlertBannerStyleCustom"];
+			
             break;
     }
 }
@@ -710,10 +720,21 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
         case ALAlertBannerStyleWarning:
             fillColor = [UIColor colorWithRed:(211/255.0) green:(209/255.0) blue:(100/255.0) alpha:1.f];
             break;
+		case ALAlertBannerStyleCustom:
+			fillColor = self.backgroundColor;
+			break;
+			
     }
-    
+	
     NSArray *colorsArray = [NSArray arrayWithObjects:(id)[fillColor CGColor], (id)[[fillColor darkerColor] CGColor], nil];
-    CGColorSpaceRef colorSpace =  CGColorSpaceCreateDeviceRGB();
+	
+	if(self.style == ALAlertBannerStyleCustom)
+	{
+		colorsArray = [NSArray arrayWithObjects:(id)[fillColor CGColor], (id)[fillColor CGColor], nil];
+	}
+	
+	
+	CGColorSpaceRef colorSpace =  CGColorSpaceCreateDeviceRGB();
     const CGFloat locations[2] = {0.f, 1.f};
     CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (__bridge CFArrayRef)colorsArray, locations);
     
@@ -754,6 +775,9 @@ static CGFloat const kForceHideAnimationDuration = 0.1f;
         case ALAlertBannerStyleWarning:
             styleString = @"ALAlertBannerStyleWarning";
             break;
+		case ALAlertBannerStyleCustom:
+			styleString = @"ALAlertBannerStyleCustom";
+			break;
     }
     NSString *positionString;
     switch (self.position) {
